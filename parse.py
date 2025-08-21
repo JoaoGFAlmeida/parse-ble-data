@@ -2,6 +2,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from pkgutil import get_data
 from typing import List, Optional, Dict
+import pandas as pd
 
 def hexstr_to_bytes(s: str) -> bytes:
     s = "".join(s.split())
@@ -119,8 +120,17 @@ def get_acc_data(raw: str):
         return parsed.acc.accel_counts
 
 if __name__ == "__main__":
-    rawa = "0201060303E1FF1216E1FFA10364003AFF1201051CA91D0000C3"
-    print(get_acc_data(rawa))
-    print("\n")
-    rawb = "0201060303E1FF1216E1FFA10364000FFF27FF7612A91D0000C3"
-    print(get_acc_data(rawb))
+
+    df = pd.read_csv("raw_comparison.csv")
+    # rawa = "0201060303E1FF1216E1FFA103640005FF1A00211CA91D0000C3"
+    # print(get_acc_data(rawa))
+    # print("\n")
+    # rawb = "0201060303E1FF1216E1FFA10364FFD5FF48FF5012A91D0000C3"
+    # print(get_acc_data(rawb))
+
+    raws_a = [raw for raw in df["raw_a"]]
+    raws_b = [raw for raw in df["raw_b"]]
+    times = [t for t in df["timestamp"]]
+
+    for t, raw_a, raw_b in zip(times, raws_a, raws_b):
+        print(f"{t} - {get_acc_data(raw_a)} // {get_acc_data(raw_b)}")
